@@ -4,9 +4,7 @@
 // <authors> [Insert Your Name] </authors>
 // <date> [Insert the Date] </date>
 
-// Here is the first change made locally on my labtop. Please push through.
-
-// This is from my VM on my mac book, super cool test baby.
+// Last Personal Repo Push 8/27 6:33
 
 namespace CS3500.FormulaTests;
 
