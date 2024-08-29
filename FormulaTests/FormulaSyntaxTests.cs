@@ -98,6 +98,22 @@ public class FormulaSyntaxTests
         _ = new Formula( "1+1" );
     }
 
+    /// <summary>
+    ///   <para>
+    ///     Make sure a simple well formed formula is accepted by the constructor (the constructor
+    ///     should not throw an exception).
+    ///   </para>
+    ///   <remarks>
+    ///     This is an example of a test that is not expected to throw an exception, i.e., it succeeds.
+    ///     In other words, the formula "1+1" is a valid formula which should not cause any errors.
+    ///   </remarks>
+    /// </summary>
+    [TestMethod]
+    public void FormulaConstructor_TestFirstTokenOpenParenthesis_Valid()
+    {
+        _ = new Formula("(1+1)");
+    }
+
     // --- Tests for  Last Token Rule ---
 
     // --- Tests for Parentheses/Operator Following Rule ---
