@@ -1,12 +1,10 @@
 // <copyright file="FormulaSyntaxTests.cs" company="UofU-CS3500">
 //   Copyright 2024 UofU-CS3500. All rights reserved.
 // </copyright>
-// <authors> [Insert Your Name] </authors>
-// <date> [Insert the Date] </date>
+// <authors> Jake Heairld </authors>
+// <date> 8/27/2024 </date>
 
-// Last Personal Repo Push 8/27 6:33 from PC
-
-namespace CS3500.FormulaTests; 
+namespace CS3500.FormulaTests;
 
 using CS3500.Formula1; // Change this using statement to use different formula implementations.
 
@@ -71,12 +69,95 @@ public class FormulaSyntaxTests
     [ExpectedException( typeof( FormulaFormatException ) )]
     public void FormulaConstructor_TestNoTokens_Invalid( )
     {
-        _ = new Formula( "" );  // note: it is arguable that you should replace "" with string.Empty for readability and clarity of intent (e.g., not a cut and paste error or a "I forgot to put something there" error).
+        _ = new Formula(string.Empty);
+    }
+
+    [TestMethod]
+    public void FormulaConstructor_TestOneToken_Valid()
+    {
+        _ = new Formula("1");
     }
 
     // --- Tests for Valid Token Rule ---
 
+    [TestMethod]
+    public void FormulaConstructor_TestWholeNumberTokens_Valid()
+    {
+        _ = new Formula("1 + 50 + 299");
+    }
+
+    [TestMethod]
+    public void FormulaConstructor_TestDecimalNumberTokens_Valid()
+    {
+        _ = new Formula("0.1 + 3.14");
+    }
+
+    [TestMethod]
+    public void FormulaConstructor_TestLowerCaseExponentNumberTokens_Valid()
+    {
+        _ = new Formula("2e5 + 2e5");
+    }
+
+    [TestMethod]
+    public void FormulaConstructor_TestUpperCaseExponentNumberTokens_Valid()
+    {
+        _ = new Formula("3.5E-6 + 3.5E-6");
+    }
+
+    [TestMethod]
+    public void FormulaConstructor_TestVariableTokens_Valid()
+    {
+        _ = new Formula("abc123 + y1");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void FormulaConstructor_TestVariableLetterTokens_Invalid()
+    {
+        _ = new Formula("a + a");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void FormulaConstructor_TestVariableNumLetterTokens_Invalid()
+    {
+        _ = new Formula("2a + 2a");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void FormulaConstructor_TestVariableLetterNumLetterTokens_Invalid()
+    {
+        _ = new Formula("a2a + a2a");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void FormulaConstructor_TestInvalidTokens_Invalid()
+    {
+        _ = new Formula("1 + 1 !@#$%^&*{};?.,<> ");
+    }
+
+    [TestMethod]
+    public void FormulaConstructor_TestOperatorAndParenthesisTokens_Valid()
+    {
+        _ = new Formula("(1 + 1) - 1 * 1 / 1");
+    }
+
     // --- Tests for Closing Parenthesis Rule
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void FormulaConstructor_TestClosingParenthesisOrder_Invalid()
+    {
+        _ = new Formula("(1 + 1) + 1) + (1 + 1");
+    }
+
+    [TestMethod]
+    public void FormulaConstructor_TestClosingParenthesisOrder_Valid()
+    {
+        _ = new Formula("((1 + 1) + (1 + 1))");
+    }
 
     // --- Tests for Balanced Parentheses Rule
 
@@ -96,6 +177,12 @@ public class FormulaSyntaxTests
     public void FormulaConstructor_TestFirstTokenNumber_Valid( )
     {
         _ = new Formula( "1+1" );
+    }
+
+    [TestMethod]
+    public void FormulaConstructor_TestFirstTokenOpenParenthesis_Valid()
+    {
+        _ = new Formula("(1+1)");
     }
 
     // --- Tests for  Last Token Rule ---
