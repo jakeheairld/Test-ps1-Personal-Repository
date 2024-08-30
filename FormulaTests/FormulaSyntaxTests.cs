@@ -2,7 +2,7 @@
 //   Copyright 2024 UofU-CS3500. All rights reserved.
 // </copyright>
 // <authors> Jake Heairld </authors>
-// <date> 8/27/2024 </date>
+// <date> 8/26/2024 </date>
 
 namespace CS3500.FormulaTests;
 
