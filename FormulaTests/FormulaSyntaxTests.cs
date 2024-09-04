@@ -6,7 +6,7 @@
 
 namespace CS3500.FormulaTests;
 
-using CS3500.Formula1; // Change this using statement to use different formula implementations.
+using CS3500.Formula3; // Change this using statement to use different formula implementations.
 
 /// <summary>
 ///   <para>
@@ -67,13 +67,20 @@ public class FormulaSyntaxTests
     /// </summary>
     [TestMethod]
     [ExpectedException( typeof( FormulaFormatException ) )]
-    public void FormulaConstructor_TestNoTokens_Invalid( )
+    public void OneToken_FormulaConstructor_TestNoTokens_Invalid( )
     {
         _ = new Formula(string.Empty);
     }
 
     [TestMethod]
-    public void FormulaConstructor_TestOneToken_Valid()
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void OneToken_FormulaConstructor_TestWhitespaceNoTokens_Invalid()
+    {
+        _ = new Formula("       ");
+    }
+
+    [TestMethod]
+    public void OneToken_FormulaConstructor_TestOneToken_Valid()
     {
         _ = new Formula("1");
     }
@@ -81,86 +88,179 @@ public class FormulaSyntaxTests
     // --- Tests for Valid Token Rule ---
 
     [TestMethod]
-    public void FormulaConstructor_TestWholeNumberTokens_Valid()
+    public void ValidToken_FormulaConstructor_TestWholeNumberTokens_Valid()
     {
         _ = new Formula("1 + 50 + 299");
     }
 
     [TestMethod]
-    public void FormulaConstructor_TestDecimalNumberTokens_Valid()
+    public void ValidToken_FormulaConstructor_TestDecimalNumberTokens_Valid()
     {
         _ = new Formula("0.1 + 3.14");
     }
 
     [TestMethod]
-    public void FormulaConstructor_TestLowerCaseExponentNumberTokens_Valid()
+    public void ValidToken_FormulaConstructor_TestEmptyDecimalTokens_Valid()
+    {
+        _ = new Formula("0. + 3.");
+    }
+
+    [TestMethod]
+    public void ValidToken_FormulaConstructor_TestLowerCaseExponentNumberTokens_Valid()
     {
         _ = new Formula("2e5 + 2e5");
     }
 
     [TestMethod]
-    public void FormulaConstructor_TestUpperCaseExponentNumberTokens_Valid()
+    public void ValidToken_FormulaConstructor_TestUpperCaseExponentNumberTokens_Valid()
     {
-        _ = new Formula("3.5E-6 + 3.5E-6");
+        _ = new Formula("3.5E-6 + 13.5E-6");
     }
 
     [TestMethod]
-    public void FormulaConstructor_TestVariableTokens_Valid()
+    public void ValidToken_FormulaConstructor_TestVariableTokensOneLetterOneDigit_Valid()
     {
-        _ = new Formula("abc123 + y1");
+        _ = new Formula("y1 + y1");
+    }
+
+    [TestMethod]
+    public void ValidToken_FormulaConstructor_TestVariableTokensOneLetterDigits_Valid()
+    {
+        _ = new Formula("b198 + y154");
+    }
+
+    [TestMethod]
+    public void ValidToken_FormulaConstructor_TestVariableTokensLettersOneDigit_Valid()
+    {
+        _ = new Formula("abc1 + udh4");
+    }
+
+    [TestMethod]
+    public void ValidToken_FormulaConstructor_TestVariableTokensLettersDigits_Valid()
+    {
+        _ = new Formula("abc123 + judy8374");
+    }
+
+    [TestMethod]
+    public void ValidToken_FormulaConstructor_TestVariableTokensUpperCaseLetters_Valid()
+    {
+        _ = new Formula("D1 + GjD3 + I2831 + DeDcy727");
     }
 
     [TestMethod]
     [ExpectedException(typeof(FormulaFormatException))]
-    public void FormulaConstructor_TestVariableLetterTokens_Invalid()
+    public void ValidToken_FormulaConstructor_TestVariableLetterTokens_Invalid()
     {
         _ = new Formula("a + a");
     }
 
     [TestMethod]
     [ExpectedException(typeof(FormulaFormatException))]
-    public void FormulaConstructor_TestVariableNumLetterTokens_Invalid()
+    public void ValidToken_FormulaConstructor_TestVariableNumLetterTokens_Invalid()
     {
         _ = new Formula("2a + 2a");
     }
 
     [TestMethod]
     [ExpectedException(typeof(FormulaFormatException))]
-    public void FormulaConstructor_TestVariableLetterNumLetterTokens_Invalid()
+    public void ValidToken_FormulaConstructor_TestVariableLetterNumLetterTokens_Invalid()
     {
         _ = new Formula("a2a + a2a");
     }
 
     [TestMethod]
     [ExpectedException(typeof(FormulaFormatException))]
-    public void FormulaConstructor_TestInvalidTokens_Invalid()
+    public void ValidToken_FormulaConstructor_TestInvalidTokens_Invalid()
     {
-        _ = new Formula("1 + 1 !@#$%^&*{};?.,<> ");
+        _ = new Formula("1 + 1 !@#$%^&*{};?.,<>_ ");
     }
 
     [TestMethod]
-    public void FormulaConstructor_TestOperatorAndParenthesisTokens_Valid()
+    public void ValidToken_FormulaConstructor_TestOperatorAdditionToken_Valid()
     {
-        _ = new Formula("(1 + 1) - 1 * 1 / 1");
+        _ = new Formula("1+1+1+1");
+    }
+
+    [TestMethod]
+    public void ValidToken_FormulaConstructor_TestOperatorSubtractionToken_Valid()
+    {
+        _ = new Formula("1-1-1-1");
+    }
+
+    [TestMethod]
+    public void ValidToken_FormulaConstructor_TestOperatorMultiplicationToken_Valid()
+    {
+        _ = new Formula("1*1*1*1");
+    }
+
+    [TestMethod]
+    public void ValidToken_FormulaConstructor_TestOperatorDivisionToken_Valid()
+    {
+        _ = new Formula("1/1/1/1");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void ValidToken_FormulaConstructor_TestInvalidModulusOperatorToken_Invalid()
+    {
+        _ = new Formula("1%1%1%1");
+    }
+
+    [TestMethod]
+    public void ValidToken_FormulaConstructor_TestNoWhitespaceTokens_Valid()
+    {
+        _ = new Formula("1+abc3/(1+1)/6");
+    }
+
+    [TestMethod]
+    public void ValidToken_FormulaConstructor_TestExtraWhitespaceTokens_Valid()
+    {
+        _ = new Formula("      1  +1   +  1   ");
+    }
+
+    [TestMethod]
+    public void ValidToken_FormulaConstructor_TestParenthesisAroundIndividualNumberTokens_Valid()
+    {
+        _ = new Formula("(1)+(2)");
     }
 
     // --- Tests for Closing Parenthesis Rule
 
     [TestMethod]
     [ExpectedException(typeof(FormulaFormatException))]
-    public void FormulaConstructor_TestClosingParenthesisOrder_Invalid()
+    public void ClosingParenthesis_FormulaConstructor_TestClosingParenthesisOrder_Invalid()
     {
-        _ = new Formula("(1 + 1) + 1) + (1 + 1");
+        _ = new Formula("(1 + 1)) + 1 + (1 + 1");
     }
 
     [TestMethod]
-    public void FormulaConstructor_TestClosingParenthesisOrder_Valid()
+    public void ClosingParenthesis_FormulaConstructor_TestClosingParenthesisOrder_Valid()
     {
         _ = new Formula("((1 + 1) + (1 + 1))");
     }
 
     // --- Tests for Balanced Parentheses Rule
 
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void BalancedParenthesis_FormulaConstructor_TestMoreOpenParenthesisTotal_Invalid()
+    {
+        _ = new Formula("(((1 + 1))");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void BalancedParenthesis_FormulaConstructor_TestMoreCloseParenthesisTotal_Invalid()
+    {
+        _ = new Formula("((1 + 1)))");
+    }
+
+    [TestMethod]
+    public void BalancedParenthesis_FormulaConstructor_TestEvenParenthesisTotal_Valid()
+    {
+        _ = new Formula("((((1) + (1))))-(1)");
+    }
+     
     // --- Tests for First Token Rule
 
     /// <summary>
@@ -174,20 +274,158 @@ public class FormulaSyntaxTests
     ///   </remarks>
     /// </summary>
     [TestMethod]
-    public void FormulaConstructor_TestFirstTokenNumber_Valid( )
+    public void FirstToken_FormulaConstructor_TestFirstTokenNumber_Valid( )
     {
-        _ = new Formula( "1+1" );
+        _ = new Formula("1+1");
     }
 
     [TestMethod]
-    public void FormulaConstructor_TestFirstTokenOpenParenthesis_Valid()
+    public void FirstToken_FormulaConstructor_TestFirstTokenVariable_Valid()
+    {
+        _ = new Formula("x2+y3");
+    }
+
+    [TestMethod]
+    public void FirstToken_FormulaConstructor_TestFirstTokenOpenParenthesis_Valid()
     {
         _ = new Formula("(1+1)");
     }
 
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void FirstToken_FormulaConstructor_TestFirstTokenCloseParenthesis_Invalid()
+    {
+        _ = new Formula(") 1 + 1");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void FirstToken_FormulaConstructor_TestFirstTokenOperator_Invalid()
+    {
+        _ = new Formula("+ 1 + 1");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void FirstToken_FormulaConstructor_TestFirstTokenInvalidToken_Invalid()
+    {
+        _ = new Formula("& 1 + 1");
+    }
+
     // --- Tests for  Last Token Rule ---
+
+    [TestMethod]
+    public void LastToken_FormulaConstructor_TestLastTokenCloseParenthesis_Valid()
+    {
+        _ = new Formula("5 + (2 * 1)");
+    }
+
+    [TestMethod]
+    public void LastToken_FormulaConstructor_TestLastTokenVariable_Valid()
+    {
+        _ = new Formula("5 + 2 * e1");
+    }
+
+    [TestMethod]
+    public void LastToken_FormulaConstructor_TestLastTokenNumber_Valid()
+    {
+        _ = new Formula("5 + 2 * 1");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void LastToken_FormulaConstructor_TestLastTokenOperator_Invalid()
+    {
+        _ = new Formula("1 + 1 +");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void LastToken_FormulaConstructor_TestLastTokenOpenParenthesis_Invalid()
+    {
+        _ = new Formula("1 + 1 (");
+    }
 
     // --- Tests for Parentheses/Operator Following Rule ---
 
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void ParenthesisOperatorFollowing_FormulaConstructor_TestTwoOperator_Invalid()
+    {
+        _ = new Formula("1+-1");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void ParenthesisOperatorFollowing_FormulaConstructor_TestOpenParenthesisOperator_Invalid()
+    {
+        _ = new Formula("(+1 + 1)");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void ParenthesisOperatorFollowing_FormulaConstructor_TestOperatorOpenParenthesis_Invalid()
+    {
+        _ = new Formula("+(1 + 1)");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void ParenthesisOperatorFollowing_FormulaConstructor_TestOpenParenthesisCloseParenthesis_Invalid()
+    {
+        _ = new Formula("() + (1 + 1)");
+    }
+
+    [TestMethod]
+    public void ParenthesisOperatorFollowing_FormulaConstructor_TestOpenParenthesisNumber_Valid()
+    {
+        _ = new Formula("(2 - 5.5)");
+    }
+
+    [TestMethod]
+    public void ParenthesisOperatorFollowing_FormulaConstructor_TestOpenParenthesisVariable_Valid()
+    {
+        _ = new Formula("(r2 - 5.5)");
+    }
+
+    [TestMethod]
+    public void ParenthesisOperatorFollowing_FormulaConstructor_TestMultipleOpenParenthesisVariable_Valid()
+    {
+        _ = new Formula("((r2 - 5.5))");
+    }
+
+    [TestMethod]
+    public void ParenthesisOperatorFollowing_FormulaConstructor_TestMultipleOpenParenthesis_Valid()
+    {
+        _ = new Formula("(((1 + 7)+2)+3)");
+    }
+
     // --- Tests for Extra Following Rule ---
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void ExtraFollowing_FormulaConstructor_TestNumberFollowingNumberToken_Invalid()
+    {
+        _ = new Formula("1 1+2");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void ExtraFollowing_FormulaConstructor_TestVariableFollowingNumberToken_Invalid()
+    {
+        _ = new Formula("1 a2+2");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(FormulaFormatException))]
+    public void ExtraFollowing_FormulaConstructor_TestNumberFollowingVariableToken_Invalid()
+    {
+        _ = new Formula("a2 1+2");
+    }
+
+    [TestMethod]
+    public void ExtraFollowing_FormulaConstructor_TestMultipleCloseParenthesis_Valid()
+    {
+        _ = new Formula("(3+(2+(1 + 7)))");
+    }
 }
